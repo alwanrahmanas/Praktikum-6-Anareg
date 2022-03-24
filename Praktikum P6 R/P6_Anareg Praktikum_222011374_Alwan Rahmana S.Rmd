@@ -1,0 +1,68 @@
+---
+title: "Untitled"
+author: "Alwan Rahmana"
+date: "3/24/2022"
+output: word_document
+---
+
+#menentukan koefisien determinasi parsial
+
+```{r}
+library(haven)
+library(tidyverse)
+library(dplyr)
+library(asbio)#perhitungan determinasi parsial
+library(ppcor)#perhitungan determinasi parsial
+library(rsq)#perhitungan korelasi parsial
+
+data<-Data_TugasRegresi01
+y<-data$Y
+x1<-data$X1
+x2<-data$X2
+x3<-data$X3
+```
+
+
+```{r}
+
+#Menginisiasi model regresi linier berganda
+reg<-lm(y~x1+x2+x3)
+reg12<-lm(y~x1+x2)
+reg23<-lm(y~x2+x3)
+reg13<-lm(y~x1+x3)
+```
+
+```{r}
+rsq.partial(reg) 
+#menghitung koefisien determinasi untuk X1 given X2 dan X3
+#menghitung koefisien determinasi untuk X2 given X1 dan X3
+#menghitung koefisien determinasi untuk X3 given X1 dan X2
+```
+```{r}
+library(ppcor)
+data_cor<-data.frame(y,x1,x2,x3)
+
+#penghitungan koefisiesn korelasi parsial untuk masing-masing variabel independen
+
+cor_par<-ppcor::pcor(data_cor)
+cor_par$estimate
+a<-cor_par$estimate
+```
+#Hubungan antara koefisien determinasi parsial dan koefisien korelasi parsial
+```{r}
+#Nilai koefisien determinasi adalah kuadrat dari koefisien korelasi parsial
+
+kdx1<-cor_par$estimate[1,2]
+kdx2<-cor_par$estimate[1,3]
+kdx3<-cor_par$estimate[1,4]
+
+a<-kdx1^2
+b<-kdx2^2
+c<-kdx3^2
+
+a
+b
+c
+
+```
+

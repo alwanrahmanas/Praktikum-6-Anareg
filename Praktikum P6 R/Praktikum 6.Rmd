@@ -1,0 +1,123 @@
+---
+title: "P5 Anareg Praktikum_222011374_Alwan Rahmana"
+author: "Alwan Rahmana"
+date: "3/24/2022"
+output: word_document
+---
+
+
+```{r}
+library(haven)
+library(tidyverse)
+library(dplyr)
+library(asbio)#perhitungan determinasi parsial
+library(ppcor)#perhitungan determinasi parsial
+library(rsq)#perhitungan korelasi parsial
+
+data<-Data_Regresi01
+
+head(data)
+y<-Data_Regresi01$X12
+x1<-Data_Regresi01$X9
+x2<-Data_Regresi01$X10
+```
+
+```{r}
+reg<-lm(y~x1+x2)
+reg1<-lm(y~x1)
+reg2<-lm(y~x2)
+```
+
+```{r}
+summary(reg)
+```
+```{r}
+anova(reg)
+```
+niai sse = 2859470923
+```{r}
+anova(reg1)
+anova(reg2)
+```
+nilai sse(x1) = 3735858256
+nilai sse(x2) = 4614394048
+
+```{r}
+sse<- 2859470923
+sse_x1<-3735858256
+sse_x2<-4614394048
+
+# bisa jgsse_x11<-anova(reg1)$'Sum Sq'[2]
+#sse_x11
+```
+
+
+```{r}
+#menghitung nilai koefisien determinasi parsial x1
+parsial1<-(sse_x1-sse)/sse_x1
+parsial1
+
+#menghitung nilai koefisien determinasi parsial x2
+parsial2<-(sse_x2-sse)/sse_x2
+parsial2
+
+
+```
+#Interpretasi
+
+#X1
+Keragaman nilai pendapatan perkapita yang mampu dijelaskan oleh variabel x1 (persentase lulusan sarjana/diplolma IV) ketika variabel x2 (persentase penduduk di bawah garis kemiskinan) sudah masuk dalam model adalah sebesar 38,0315% #ini hasil hitung parsial 2
+
+Ketika x1 ditambahkan dalam model yang sudah memuat x2 maka SSE(X2) akan berkurang sebesar 38,0315%
+
+proporsi keragaman pendapatan perkatpita yang dapat dijelaskan oeh x1 tetapi tidak dapat dijelaskan oleh x2 adalah sebesar 38,0315%
+
+#X2
+Keragaman nilai pendapatan perkapita yang mampu dijelaskan oleh variabel x2 (persentase penduduk di bawah garis kemiskinan) ketika variabel x1 (persentase lulusan sarjana/diplolma IV) sudah masuk dalam model adalah sebesar 23,45558% #ini hasil hitung parsial 1
+
+Ketika x2 ditambahkan dalam model yang sudah memuat x1 maka SSE(X1) akan berkurang sebesar 23,45558%
+
+proporsi keragaman pendapatan perkatpita yang dapat dijelaskan oeh x2 tetapi tidak dapat dijelaskan oleh x1 adalah sebesar 23,45558%
+```{r}
+r2_12<-partial.R2(reg2,reg)
+r2_12
+```
+
+```{r}
+r2_21<-partial.R2(reg1,reg)
+r2_21
+```
+```{r}
+rsq.partial(reg) #paling cepat
+```
+#Koefisien korelasi parsial
+#cara manual
+
+#koef parsial untuk x1
+```{r}
+#penghitungan koefisien korelasi parsial jika x2 sudah ada dalam model
+
+sqrt(parsial2) #mengakarkan koefisien determinasi parsial x1|x2
+```
+```{r}
+#penghitungan koefisien korelasi parsial jika x1 sudah ada dalam model
+
+sqrt(parsial1) #mengakarkan koefisien determinasi parsial x2|x1
+```
+```{r}
+# cara cepat
+
+
+library(ppcor)
+data_cor<-data.frame(y,x1,x2)
+
+#penghitungan koefisiesn korelasi parsial untuk masing-masing variabel independen
+
+cor_par<-pcor(data_cor)
+cor_par$estimate
+
+```
+#interpretasi
+
+korelasi parsial y dengan x2 adalah -0,484
+korelasi parsial y dengan x1 adalah 0,6166
